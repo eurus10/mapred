@@ -17,5 +17,5 @@ message SubmitReq {
 message SubmitResp {
     bool success = 1;
     string message = 2;
-    string result_file = 3;
+    string output_file = 3;
 }

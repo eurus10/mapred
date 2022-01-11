@@ -38,7 +38,7 @@ func (c *ClientService) Submit(ctx context.Context, req *api.SubmitReq) (*api.Su
 	inputFile.Close()
 	// create Jobs: Mapper & Reducer
 	scheduler.Submit(jobName)
-	// Result File (.txt)
-	resultFilePath := fmt.Sprintf("%s/result.txt", jobDirPath)
-	return &api.SubmitResp{Success: true, Message: "提交任务成功", ResultFile: resultFilePath}, nil
+	// set Output File (.txt)
+	outPutFilePath := fmt.Sprintf("%s/output.txt", jobDirPath)
+	return &api.SubmitResp{Success: true, Message: "提交任务成功", OutputFile: outPutFilePath}, nil
 }
