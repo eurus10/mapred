@@ -7,6 +7,8 @@ service WorkerService {
     rpc HeartBeat (HeartBeatReq) returns (GenericResp);
     rpc ApplyForJob (ApplyForJobReq) returns (ApplyForJobResp);
     rpc DoneJob (DoneJobReq) returns (GenericResp);
+    rpc PullFile (PullFileReq) returns (PullFileResp);
+    rpc WriteFile (WriteFileReq) returns (GenericResp);
 }
 
 message GenericResp {
@@ -36,4 +38,21 @@ message ApplyForJobResp {
 
 message DoneJobReq {
     int32 job_id = 1;
+}
+
+message PullFileReq {
+    string job_name = 1;
+    string file_name = 2;
+}
+
+message PullFileResp {
+    bool success = 1;
+    string message = 2;
+    bytes data = 3;
+}
+
+message WriteFileReq {
+    string job_name = 1;
+    string file_name = 2;
+    bytes data = 3;
 }

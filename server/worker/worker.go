@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"mapred/server/master/api/worker"
+	api "mapred/server/master/api/worker"
 	"mapred/server/worker/config"
 	"time"
 
@@ -11,8 +11,12 @@ import (
 )
 
 func main() {
+	// stop signal
 	stop := make(chan struct{})
 	defer close(stop)
+
+	// worker id
+	workerID := fmt.Sprintf("%s:%d", config.IP, config.Port)
 
 	conn, err := grpc.Dial(fmt.Sprintf("%s:%d", config.MasterIP, config.MasterPort), grpc.WithInsecure())
 	if err != nil {
@@ -20,23 +24,32 @@ func main() {
 		return
 	}
 	defer conn.Close()
-	client := worker.NewWorkerServiceClient(conn)
+	client := api.NewWorkerServiceClient(conn)
+
+	// send heartbeat in backend
 	go func(stop chan struct{}) {
-		defer fmt.Println("测试，Interrupt是否可以终止协程")
 		for {
 			select {
 			case <-stop:
 				return
 			default:
 				fmt.Println("发送心跳")
-				client.HeartBeat(context.Background(), &worker.HeartBeatReq{Id: fmt.Sprintf("%s:%d", config.IP, config.Port)})
+				client.HeartBeat(context.Background(), &api.HeartBeatReq{Id: workerID})
 				time.Sleep(5 * time.Second)
 			}
 		}
 	}(stop)
 
 	for {
-		fmt.Println("Worker运行中")
-		time.Sleep(10 * time.Second)
+		resp, _ := client.ApplyForJob(context.Background(), &api.ApplyForJobReq{Id: workerID})
+		if resp.Success {
+			// TODO 从master节点拉取job文件和输入文件
+			// job文件为 job.so
+			// mapper的输入文件为 input.txt
+			// reducer的输入文件为 temp.txt
+		} else {
+			fmt.Println(resp.Message)
+			time.Sleep(10 * time.Second)
+		}
 	}
 }

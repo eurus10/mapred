@@ -3,8 +3,11 @@ package worker
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	api "mapred/server/master/api/worker"
+	"mapred/server/master/config"
 	"mapred/server/master/scheduler"
+	"os"
 	"time"
 )
 
@@ -77,4 +80,24 @@ func (w *WorkerService) ApplyForJob(ctx context.Context, req *api.ApplyForJobReq
 func (w *WorkerService) DoneJob(ctx context.Context, req *api.DoneJobReq) (*api.GenericResp, error) {
 	scheduler.Done(int(req.JobId))
 	return &api.GenericResp{Success: true, Message: "任务结果提交成功"}, nil
+}
+
+func (w *WorkerService) PullFile(ctx context.Context, req *api.PullFileReq) (*api.PullFileResp, error) {
+	filePath := fmt.Sprintf("%s/%s/%s", config.APPS, req.JobName, req.FileName)
+	data, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		return &api.PullFileResp{Success: false, Message: "文件不存在"}, nil
+	}
+	return &api.PullFileResp{Success: true, Message: "拉取成功", Data: data}, nil
+}
+
+func (w *WorkerService) WriteFile(ctx context.Context, req *api.WriteFileReq) (*api.GenericResp, error) {
+	filePath := fmt.Sprintf("%s/%s/%s", config.APPS, req.JobName, req.FileName)
+	file, err := os.Create(filePath)
+	fmt.Fprint(file, req.Data)
+	file.Close()
+	if err != nil {
+		return &api.GenericResp{Success: false, Message: "写入文件失败"}, nil
+	}
+	return &api.GenericResp{Success: true, Message: "写入文件成功"}, nil
 }

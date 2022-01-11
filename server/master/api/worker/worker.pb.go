@@ -346,6 +346,187 @@ func (x *DoneJobReq) GetJobId() int32 {
 	return 0
 }
 
+type PullFileReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	JobName  string `protobuf:"bytes,1,opt,name=job_name,json=jobName,proto3" json:"job_name,omitempty"`
+	FileName string `protobuf:"bytes,2,opt,name=file_name,json=fileName,proto3" json:"file_name,omitempty"`
+}
+
+func (x *PullFileReq) Reset() {
+	*x = PullFileReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_worker_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PullFileReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PullFileReq) ProtoMessage() {}
+
+func (x *PullFileReq) ProtoReflect() protoreflect.Message {
+	mi := &file_worker_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PullFileReq.ProtoReflect.Descriptor instead.
+func (*PullFileReq) Descriptor() ([]byte, []int) {
+	return file_worker_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *PullFileReq) GetJobName() string {
+	if x != nil {
+		return x.JobName
+	}
+	return ""
+}
+
+func (x *PullFileReq) GetFileName() string {
+	if x != nil {
+		return x.FileName
+	}
+	return ""
+}
+
+type PullFileResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Success bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	Data    []byte `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
+}
+
+func (x *PullFileResp) Reset() {
+	*x = PullFileResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_worker_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PullFileResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PullFileResp) ProtoMessage() {}
+
+func (x *PullFileResp) ProtoReflect() protoreflect.Message {
+	mi := &file_worker_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PullFileResp.ProtoReflect.Descriptor instead.
+func (*PullFileResp) Descriptor() ([]byte, []int) {
+	return file_worker_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *PullFileResp) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *PullFileResp) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *PullFileResp) GetData() []byte {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+type WriteFileReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	JobName  string `protobuf:"bytes,1,opt,name=job_name,json=jobName,proto3" json:"job_name,omitempty"`
+	FileName string `protobuf:"bytes,2,opt,name=file_name,json=fileName,proto3" json:"file_name,omitempty"`
+	Data     []byte `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
+}
+
+func (x *WriteFileReq) Reset() {
+	*x = WriteFileReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_worker_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *WriteFileReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WriteFileReq) ProtoMessage() {}
+
+func (x *WriteFileReq) ProtoReflect() protoreflect.Message {
+	mi := &file_worker_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WriteFileReq.ProtoReflect.Descriptor instead.
+func (*WriteFileReq) Descriptor() ([]byte, []int) {
+	return file_worker_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *WriteFileReq) GetJobName() string {
+	if x != nil {
+		return x.JobName
+	}
+	return ""
+}
+
+func (x *WriteFileReq) GetFileName() string {
+	if x != nil {
+		return x.FileName
+	}
+	return ""
+}
+
+func (x *WriteFileReq) GetData() []byte {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
 var File_worker_proto protoreflect.FileDescriptor
 
 var file_worker_proto_rawDesc = []byte{
@@ -371,20 +552,43 @@ var file_worker_proto_rawDesc = []byte{
 	0x2e, 0x77, 0x6f, 0x72, 0x6b, 0x65, 0x72, 0x2e, 0x4a, 0x6f, 0x62, 0x52, 0x03, 0x6a, 0x6f, 0x62,
 	0x22, 0x23, 0x0a, 0x0a, 0x44, 0x6f, 0x6e, 0x65, 0x4a, 0x6f, 0x62, 0x52, 0x65, 0x71, 0x12, 0x15,
 	0x0a, 0x06, 0x6a, 0x6f, 0x62, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x05,
-	0x6a, 0x6f, 0x62, 0x49, 0x64, 0x32, 0xbb, 0x01, 0x0a, 0x0d, 0x57, 0x6f, 0x72, 0x6b, 0x65, 0x72,
-	0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x36, 0x0a, 0x09, 0x48, 0x65, 0x61, 0x72, 0x74,
-	0x42, 0x65, 0x61, 0x74, 0x12, 0x14, 0x2e, 0x77, 0x6f, 0x72, 0x6b, 0x65, 0x72, 0x2e, 0x48, 0x65,
-	0x61, 0x72, 0x74, 0x42, 0x65, 0x61, 0x74, 0x52, 0x65, 0x71, 0x1a, 0x13, 0x2e, 0x77, 0x6f, 0x72,
-	0x6b, 0x65, 0x72, 0x2e, 0x47, 0x65, 0x6e, 0x65, 0x72, 0x69, 0x63, 0x52, 0x65, 0x73, 0x70, 0x12,
-	0x3e, 0x0a, 0x0b, 0x41, 0x70, 0x70, 0x6c, 0x79, 0x46, 0x6f, 0x72, 0x4a, 0x6f, 0x62, 0x12, 0x16,
-	0x2e, 0x77, 0x6f, 0x72, 0x6b, 0x65, 0x72, 0x2e, 0x41, 0x70, 0x70, 0x6c, 0x79, 0x46, 0x6f, 0x72,
-	0x4a, 0x6f, 0x62, 0x52, 0x65, 0x71, 0x1a, 0x17, 0x2e, 0x77, 0x6f, 0x72, 0x6b, 0x65, 0x72, 0x2e,
-	0x41, 0x70, 0x70, 0x6c, 0x79, 0x46, 0x6f, 0x72, 0x4a, 0x6f, 0x62, 0x52, 0x65, 0x73, 0x70, 0x12,
-	0x32, 0x0a, 0x07, 0x44, 0x6f, 0x6e, 0x65, 0x4a, 0x6f, 0x62, 0x12, 0x12, 0x2e, 0x77, 0x6f, 0x72,
-	0x6b, 0x65, 0x72, 0x2e, 0x44, 0x6f, 0x6e, 0x65, 0x4a, 0x6f, 0x62, 0x52, 0x65, 0x71, 0x1a, 0x13,
-	0x2e, 0x77, 0x6f, 0x72, 0x6b, 0x65, 0x72, 0x2e, 0x47, 0x65, 0x6e, 0x65, 0x72, 0x69, 0x63, 0x52,
-	0x65, 0x73, 0x70, 0x42, 0x0b, 0x5a, 0x09, 0x2e, 0x2e, 0x2f, 0x77, 0x6f, 0x72, 0x6b, 0x65, 0x72,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6a, 0x6f, 0x62, 0x49, 0x64, 0x22, 0x45, 0x0a, 0x0b, 0x50, 0x75, 0x6c, 0x6c, 0x46, 0x69, 0x6c,
+	0x65, 0x52, 0x65, 0x71, 0x12, 0x19, 0x0a, 0x08, 0x6a, 0x6f, 0x62, 0x5f, 0x6e, 0x61, 0x6d, 0x65,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6a, 0x6f, 0x62, 0x4e, 0x61, 0x6d, 0x65, 0x12,
+	0x1b, 0x0a, 0x09, 0x66, 0x69, 0x6c, 0x65, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x08, 0x66, 0x69, 0x6c, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x22, 0x56, 0x0a, 0x0c,
+	0x50, 0x75, 0x6c, 0x6c, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x73, 0x70, 0x12, 0x18, 0x0a, 0x07,
+	0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73,
+	0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67,
+	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65,
+	0x12, 0x12, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x04,
+	0x64, 0x61, 0x74, 0x61, 0x22, 0x5a, 0x0a, 0x0c, 0x57, 0x72, 0x69, 0x74, 0x65, 0x46, 0x69, 0x6c,
+	0x65, 0x52, 0x65, 0x71, 0x12, 0x19, 0x0a, 0x08, 0x6a, 0x6f, 0x62, 0x5f, 0x6e, 0x61, 0x6d, 0x65,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6a, 0x6f, 0x62, 0x4e, 0x61, 0x6d, 0x65, 0x12,
+	0x1b, 0x0a, 0x09, 0x66, 0x69, 0x6c, 0x65, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x08, 0x66, 0x69, 0x6c, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x12, 0x0a, 0x04,
+	0x64, 0x61, 0x74, 0x61, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61,
+	0x32, 0xaa, 0x02, 0x0a, 0x0d, 0x57, 0x6f, 0x72, 0x6b, 0x65, 0x72, 0x53, 0x65, 0x72, 0x76, 0x69,
+	0x63, 0x65, 0x12, 0x36, 0x0a, 0x09, 0x48, 0x65, 0x61, 0x72, 0x74, 0x42, 0x65, 0x61, 0x74, 0x12,
+	0x14, 0x2e, 0x77, 0x6f, 0x72, 0x6b, 0x65, 0x72, 0x2e, 0x48, 0x65, 0x61, 0x72, 0x74, 0x42, 0x65,
+	0x61, 0x74, 0x52, 0x65, 0x71, 0x1a, 0x13, 0x2e, 0x77, 0x6f, 0x72, 0x6b, 0x65, 0x72, 0x2e, 0x47,
+	0x65, 0x6e, 0x65, 0x72, 0x69, 0x63, 0x52, 0x65, 0x73, 0x70, 0x12, 0x3e, 0x0a, 0x0b, 0x41, 0x70,
+	0x70, 0x6c, 0x79, 0x46, 0x6f, 0x72, 0x4a, 0x6f, 0x62, 0x12, 0x16, 0x2e, 0x77, 0x6f, 0x72, 0x6b,
+	0x65, 0x72, 0x2e, 0x41, 0x70, 0x70, 0x6c, 0x79, 0x46, 0x6f, 0x72, 0x4a, 0x6f, 0x62, 0x52, 0x65,
+	0x71, 0x1a, 0x17, 0x2e, 0x77, 0x6f, 0x72, 0x6b, 0x65, 0x72, 0x2e, 0x41, 0x70, 0x70, 0x6c, 0x79,
+	0x46, 0x6f, 0x72, 0x4a, 0x6f, 0x62, 0x52, 0x65, 0x73, 0x70, 0x12, 0x32, 0x0a, 0x07, 0x44, 0x6f,
+	0x6e, 0x65, 0x4a, 0x6f, 0x62, 0x12, 0x12, 0x2e, 0x77, 0x6f, 0x72, 0x6b, 0x65, 0x72, 0x2e, 0x44,
+	0x6f, 0x6e, 0x65, 0x4a, 0x6f, 0x62, 0x52, 0x65, 0x71, 0x1a, 0x13, 0x2e, 0x77, 0x6f, 0x72, 0x6b,
+	0x65, 0x72, 0x2e, 0x47, 0x65, 0x6e, 0x65, 0x72, 0x69, 0x63, 0x52, 0x65, 0x73, 0x70, 0x12, 0x35,
+	0x0a, 0x08, 0x50, 0x75, 0x6c, 0x6c, 0x46, 0x69, 0x6c, 0x65, 0x12, 0x13, 0x2e, 0x77, 0x6f, 0x72,
+	0x6b, 0x65, 0x72, 0x2e, 0x50, 0x75, 0x6c, 0x6c, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x1a,
+	0x14, 0x2e, 0x77, 0x6f, 0x72, 0x6b, 0x65, 0x72, 0x2e, 0x50, 0x75, 0x6c, 0x6c, 0x46, 0x69, 0x6c,
+	0x65, 0x52, 0x65, 0x73, 0x70, 0x12, 0x36, 0x0a, 0x09, 0x57, 0x72, 0x69, 0x74, 0x65, 0x46, 0x69,
+	0x6c, 0x65, 0x12, 0x14, 0x2e, 0x77, 0x6f, 0x72, 0x6b, 0x65, 0x72, 0x2e, 0x57, 0x72, 0x69, 0x74,
+	0x65, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x1a, 0x13, 0x2e, 0x77, 0x6f, 0x72, 0x6b, 0x65,
+	0x72, 0x2e, 0x47, 0x65, 0x6e, 0x65, 0x72, 0x69, 0x63, 0x52, 0x65, 0x73, 0x70, 0x42, 0x0b, 0x5a,
+	0x09, 0x2e, 0x2e, 0x2f, 0x77, 0x6f, 0x72, 0x6b, 0x65, 0x72, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x33,
 }
 
 var (
@@ -399,7 +603,7 @@ func file_worker_proto_rawDescGZIP() []byte {
 	return file_worker_proto_rawDescData
 }
 
-var file_worker_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_worker_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_worker_proto_goTypes = []interface{}{
 	(*GenericResp)(nil),     // 0: worker.GenericResp
 	(*HeartBeatReq)(nil),    // 1: worker.HeartBeatReq
@@ -407,17 +611,24 @@ var file_worker_proto_goTypes = []interface{}{
 	(*Job)(nil),             // 3: worker.Job
 	(*ApplyForJobResp)(nil), // 4: worker.ApplyForJobResp
 	(*DoneJobReq)(nil),      // 5: worker.DoneJobReq
+	(*PullFileReq)(nil),     // 6: worker.PullFileReq
+	(*PullFileResp)(nil),    // 7: worker.PullFileResp
+	(*WriteFileReq)(nil),    // 8: worker.WriteFileReq
 }
 var file_worker_proto_depIdxs = []int32{
 	3, // 0: worker.ApplyForJobResp.job:type_name -> worker.Job
 	1, // 1: worker.WorkerService.HeartBeat:input_type -> worker.HeartBeatReq
 	2, // 2: worker.WorkerService.ApplyForJob:input_type -> worker.ApplyForJobReq
 	5, // 3: worker.WorkerService.DoneJob:input_type -> worker.DoneJobReq
-	0, // 4: worker.WorkerService.HeartBeat:output_type -> worker.GenericResp
-	4, // 5: worker.WorkerService.ApplyForJob:output_type -> worker.ApplyForJobResp
-	0, // 6: worker.WorkerService.DoneJob:output_type -> worker.GenericResp
-	4, // [4:7] is the sub-list for method output_type
-	1, // [1:4] is the sub-list for method input_type
+	6, // 4: worker.WorkerService.PullFile:input_type -> worker.PullFileReq
+	8, // 5: worker.WorkerService.WriteFile:input_type -> worker.WriteFileReq
+	0, // 6: worker.WorkerService.HeartBeat:output_type -> worker.GenericResp
+	4, // 7: worker.WorkerService.ApplyForJob:output_type -> worker.ApplyForJobResp
+	0, // 8: worker.WorkerService.DoneJob:output_type -> worker.GenericResp
+	7, // 9: worker.WorkerService.PullFile:output_type -> worker.PullFileResp
+	0, // 10: worker.WorkerService.WriteFile:output_type -> worker.GenericResp
+	6, // [6:11] is the sub-list for method output_type
+	1, // [1:6] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
 	1, // [1:1] is the sub-list for extension extendee
 	0, // [0:1] is the sub-list for field type_name
@@ -501,6 +712,42 @@ func file_worker_proto_init() {
 				return nil
 			}
 		}
+		file_worker_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PullFileReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_worker_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PullFileResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_worker_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*WriteFileReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -508,7 +755,7 @@ func file_worker_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_worker_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
@@ -537,6 +784,8 @@ type WorkerServiceClient interface {
 	HeartBeat(ctx context.Context, in *HeartBeatReq, opts ...grpc.CallOption) (*GenericResp, error)
 	ApplyForJob(ctx context.Context, in *ApplyForJobReq, opts ...grpc.CallOption) (*ApplyForJobResp, error)
 	DoneJob(ctx context.Context, in *DoneJobReq, opts ...grpc.CallOption) (*GenericResp, error)
+	PullFile(ctx context.Context, in *PullFileReq, opts ...grpc.CallOption) (*PullFileResp, error)
+	WriteFile(ctx context.Context, in *WriteFileReq, opts ...grpc.CallOption) (*GenericResp, error)
 }
 
 type workerServiceClient struct {
@@ -574,11 +823,31 @@ func (c *workerServiceClient) DoneJob(ctx context.Context, in *DoneJobReq, opts 
 	return out, nil
 }
 
+func (c *workerServiceClient) PullFile(ctx context.Context, in *PullFileReq, opts ...grpc.CallOption) (*PullFileResp, error) {
+	out := new(PullFileResp)
+	err := c.cc.Invoke(ctx, "/worker.WorkerService/PullFile", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *workerServiceClient) WriteFile(ctx context.Context, in *WriteFileReq, opts ...grpc.CallOption) (*GenericResp, error) {
+	out := new(GenericResp)
+	err := c.cc.Invoke(ctx, "/worker.WorkerService/WriteFile", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // WorkerServiceServer is the server API for WorkerService service.
 type WorkerServiceServer interface {
 	HeartBeat(context.Context, *HeartBeatReq) (*GenericResp, error)
 	ApplyForJob(context.Context, *ApplyForJobReq) (*ApplyForJobResp, error)
 	DoneJob(context.Context, *DoneJobReq) (*GenericResp, error)
+	PullFile(context.Context, *PullFileReq) (*PullFileResp, error)
+	WriteFile(context.Context, *WriteFileReq) (*GenericResp, error)
 }
 
 // UnimplementedWorkerServiceServer can be embedded to have forward compatible implementations.
@@ -593,6 +862,12 @@ func (*UnimplementedWorkerServiceServer) ApplyForJob(context.Context, *ApplyForJ
 }
 func (*UnimplementedWorkerServiceServer) DoneJob(context.Context, *DoneJobReq) (*GenericResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DoneJob not implemented")
+}
+func (*UnimplementedWorkerServiceServer) PullFile(context.Context, *PullFileReq) (*PullFileResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PullFile not implemented")
+}
+func (*UnimplementedWorkerServiceServer) WriteFile(context.Context, *WriteFileReq) (*GenericResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WriteFile not implemented")
 }
 
 func RegisterWorkerServiceServer(s *grpc.Server, srv WorkerServiceServer) {
@@ -653,6 +928,42 @@ func _WorkerService_DoneJob_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _WorkerService_PullFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PullFileReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WorkerServiceServer).PullFile(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/worker.WorkerService/PullFile",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WorkerServiceServer).PullFile(ctx, req.(*PullFileReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _WorkerService_WriteFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WriteFileReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WorkerServiceServer).WriteFile(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/worker.WorkerService/WriteFile",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WorkerServiceServer).WriteFile(ctx, req.(*WriteFileReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _WorkerService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "worker.WorkerService",
 	HandlerType: (*WorkerServiceServer)(nil),
@@ -668,6 +979,14 @@ var _WorkerService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DoneJob",
 			Handler:    _WorkerService_DoneJob_Handler,
+		},
+		{
+			MethodName: "PullFile",
+			Handler:    _WorkerService_PullFile_Handler,
+		},
+		{
+			MethodName: "WriteFile",
+			Handler:    _WorkerService_WriteFile_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
