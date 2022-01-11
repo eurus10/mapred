@@ -24,7 +24,7 @@ message DownloadFileReq {
 
 message DownloadFileResp {
     bool success = 1;
-    bool message = 2;
+    string message = 2;
     string file_name = 3;
     bytes data = 4;
 }
