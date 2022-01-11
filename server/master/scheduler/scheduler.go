@@ -7,7 +7,7 @@ import (
 
 var (
 	jobID = 1
-	jobs  []mr.Job
+	jobs  map[int]mr.Job
 )
 
 func Submit(jobName string) {
@@ -16,6 +16,7 @@ func Submit(jobName string) {
 		Name: jobName,
 		Type: mr.MAPPER,
 	}
+	jobs[jobID] = mapper
 	fmt.Printf("提交Mapper任务, JobID=%d", jobID)
 	jobID++
 	reducer := mr.Job{
@@ -24,36 +25,34 @@ func Submit(jobName string) {
 		Type:     mr.REDUCER,
 		DepJobID: jobID - 1,
 	}
+	jobs[jobID] = reducer
 	fmt.Printf("提交Reducer任务, JobID=%d", jobID)
 	jobID++
-	jobs = append(jobs, mapper, reducer)
 }
 
 func GetJob(worker string) (bool, mr.Job) {
 	found := false
 	var job mr.Job
-	for i, job := range jobs {
+	for jobID, job := range jobs {
 		if job.Worker == "" {
+			if job.DepJobID != 0 {
+				_, unfinished := jobs[job.DepJobID]
+				if unfinished {
+					continue
+				}
+			}
 			found = true
 			job.Worker = worker
-			jobs[i] = job
+			jobs[jobID] = job
 			break
 		}
 	}
 	return found, job
 }
 
-func Done(jobID int) bool {
-	target := -1
-	for i, job := range jobs {
-		if job.ID == jobID {
-			target = i
-			break
-		}
+func Done(jobID int) {
+	_, unfinished := jobs[jobID]
+	if unfinished {
+		delete(jobs, jobID)
 	}
-	if target != -1 {
-		jobs = append(jobs[:target], jobs[target+1:]...)
-		return true
-	}
-	return false
 }

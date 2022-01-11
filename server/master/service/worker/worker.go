@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	api "mapred/server/master/api/worker"
+	"mapred/server/master/scheduler"
 	"time"
 )
 
@@ -62,12 +63,18 @@ func (w *WorkerService) HeartBeat(ctx context.Context, req *api.HeartBeatReq) (*
 }
 
 func (w *WorkerService) ApplyForJob(ctx context.Context, req *api.ApplyForJobReq) (*api.ApplyForJobResp, error) {
-	// 从scheduler获取任务信息
-	job := api.Job{}
-	return &api.ApplyForJobResp{Success: true, Message: "申请任务成功", Job: &job}, nil
+	ok, job := scheduler.GetJob(req.Id)
+	if !ok {
+		return &api.ApplyForJobResp{Success: false, Message: "暂无可分配任务"}, nil
+	}
+	return &api.ApplyForJobResp{Success: true, Message: "申请任务成功", Job: &api.Job{
+		Id:   int32(job.ID),
+		Name: job.Name,
+		Type: job.Type,
+	}}, nil
 }
 
 func (w *WorkerService) DoneJob(ctx context.Context, req *api.DoneJobReq) (*api.GenericResp, error) {
-	// 从scheduler中删除已完成的任务
+	scheduler.Done(int(req.JobId))
 	return &api.GenericResp{Success: true, Message: "任务结果提交成功"}, nil
 }
