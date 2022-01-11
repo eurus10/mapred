@@ -5,6 +5,7 @@ import (
 	"fmt"
 	api "mapred/server/master/api/client"
 	"mapred/server/master/config"
+	"mapred/server/master/scheduler"
 	"os"
 	"time"
 )
@@ -12,7 +13,7 @@ import (
 type ClientService struct{}
 
 func (c *ClientService) Submit(ctx context.Context, req *api.SubmitReq) (*api.SubmitResp, error) {
-	jobName := fmt.Sprint("%s_%d", req.JobName, time.Now().Unix())
+	jobName := fmt.Sprintf("%s_%d", req.JobName, time.Now().Unix())
 	// create Job WorkSpace
 	jobDirPath := fmt.Sprintf("%s/%s", config.APPS, jobName)
 	err := os.Mkdir(jobDirPath, os.ModePerm)
@@ -36,8 +37,8 @@ func (c *ClientService) Submit(ctx context.Context, req *api.SubmitReq) (*api.Su
 	fmt.Fprint(inputFile, req.InputFile)
 	inputFile.Close()
 	// create Jobs: Mapper & Reducer
-
-	// Result File (.txtx)
+	scheduler.Submit(jobName)
+	// Result File (.txt)
 	resultFilePath := fmt.Sprintf("%s/result.txt", jobDirPath)
 	return &api.SubmitResp{Success: true, Message: "提交任务成功", ResultFile: resultFilePath}, nil
 }
