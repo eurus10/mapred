@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package client;
+option go_package = "../client";
+
+service ClientService {
+    rpc Submit(SubmitReq) returns (SubmitResp);
+}
+
+message SubmitReq {
+    string job_name = 1;
+    bytes job_file = 2;
+    string input_name = 3;
+    bytes input_file = 4;
+}
+
+message SubmitResp {
+    bool success = 1;
+    string message = 2;
+    string result_file = 3;
+}
