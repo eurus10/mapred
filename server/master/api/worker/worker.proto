@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package worker;
+option go_package = "../worker";
+
+service WorkerService {
+    rpc HeartBeat (HeartBeatReq) returns (GenericResp);
+    rpc ApplyForJob (ApplyForJobReq) returns (ApplyForJobResp);
+    rpc DoneJob (DoneJobReq) returns (GenericResp);
+}
+
+message GenericResp {
+    bool success = 1;
+    string message = 2;
+}
+
+message HeartBeatReq {
+    string id = 1;
+}
+
+message ApplyForJobReq {
+    string id = 1;
+}
+
+message Job {
+    int32 id = 1;
+    string name = 2;
+    string type = 3;
+}
+
+message ApplyForJobResp {
+    bool success = 1;
+    string message = 2;
+    Job job = 3;
+}
+
+message DoneJobReq {
+    int32 job_id = 1;
+}

@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package api;
+option go_package = "../api";
+
+service BaseService {
+    rpc UploadFile(UploadFileReq) returns (UploadFileResp);
+    rpc DownloadFile(DownloadFileReq) returns (DownloadFileResp);
+}
+
+message UploadFileReq {
+    string file_name = 1;
+    bytes data = 2;
+}
+
+message UploadFileResp {
+    bool success = 1;
+    string message = 2;
+}
+
+message DownloadFileReq {
+    string file_name = 1;
+}
+
+message DownloadFileResp {
+    bool success = 1;
+    bool message = 2;
+    string file_name = 3;
+    bytes data = 4;
+}
