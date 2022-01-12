@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	capi "mapred/server/master/api/client"
 	wapi "mapred/server/master/api/worker"
 	"mapred/server/master/config"
+	cservice "mapred/server/master/service/client"
 	wservice "mapred/server/master/service/worker"
 	"net"
 
@@ -28,5 +30,6 @@ func main() {
 	defer conn.Close()
 	server := grpc.NewServer()
 	wapi.RegisterWorkerServiceServer(server, &wservice.WorkerService{})
+	capi.RegisterClientServiceServer(server, &cservice.ClientService{})
 	server.Serve(conn)
 }
