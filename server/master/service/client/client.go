@@ -26,7 +26,7 @@ func (c *ClientService) Submit(ctx context.Context, req *api.SubmitReq) (*api.Su
 	if err != nil {
 		return &api.SubmitResp{Success: false, Message: "上传Job文件失败"}, nil
 	}
-	fmt.Fprint(jobFile, req.JobFile)
+	fmt.Fprint(jobFile, string(req.JobFile))
 	jobFile.Close()
 	// save Input File (.txt)
 	inputFilePath := fmt.Sprintf("%s/input.txt", jobDirPath)
@@ -34,7 +34,7 @@ func (c *ClientService) Submit(ctx context.Context, req *api.SubmitReq) (*api.Su
 	if err != nil {
 		return &api.SubmitResp{Success: false, Message: "上传Input文件失败"}, nil
 	}
-	fmt.Fprint(inputFile, req.InputFile)
+	fmt.Fprint(inputFile, string(req.InputFile))
 	inputFile.Close()
 	// create Jobs: Mapper & Reducer
 	scheduler.Submit(jobName)

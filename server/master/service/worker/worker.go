@@ -35,9 +35,7 @@ func Scan(stop chan struct{}) {
 		case <-stop:
 			fmt.Println("[ResourceManager]Worker队列监听已关闭")
 		default:
-			fmt.Println("开始扫描...")
 			for k, w := range workers {
-				fmt.Printf("检查节点@%s, lasthb=%d\n", k, w.LastHeartBeat)
 				if now-w.LastHeartBeat > 10 {
 					delete(workers, k)
 					fmt.Printf("[ResourceManager]节点Worker@%s心跳已过期\n", k)
@@ -70,6 +68,7 @@ func (w *WorkerService) ApplyForJob(ctx context.Context, req *api.ApplyForJobReq
 	if !ok {
 		return &api.ApplyForJobResp{Success: false, Message: "暂无可分配任务"}, nil
 	}
+	fmt.Printf("Worker@%s申请任务%+v\n", req.Id, job)
 	return &api.ApplyForJobResp{Success: true, Message: "申请任务成功", Job: &api.Job{
 		Id:   int32(job.ID),
 		Name: job.Name,
@@ -94,7 +93,7 @@ func (w *WorkerService) PullFile(ctx context.Context, req *api.PullFileReq) (*ap
 func (w *WorkerService) WriteFile(ctx context.Context, req *api.WriteFileReq) (*api.GenericResp, error) {
 	filePath := fmt.Sprintf("%s/%s/%s", config.APPS, req.JobName, req.FileName)
 	file, err := os.Create(filePath)
-	fmt.Fprint(file, req.Data)
+	fmt.Fprint(file, string(req.Data))
 	file.Close()
 	if err != nil {
 		return &api.GenericResp{Success: false, Message: "写入文件失败"}, nil

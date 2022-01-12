@@ -47,7 +47,6 @@ func main() {
 			case <-stop:
 				return
 			default:
-				fmt.Println("发送心跳")
 				client.HeartBeat(context.Background(), &api.HeartBeatReq{Id: workerID})
 				time.Sleep(5 * time.Second)
 			}
@@ -59,13 +58,13 @@ func main() {
 		resp, _ := client.ApplyForJob(context.Background(), &api.ApplyForJobReq{Id: workerID})
 		if resp.Success {
 			jobInfo := resp.Job
-
 			// create Job WorkSpace
 			jobDirPath := fmt.Sprintf("%s/%s", config.APPS, jobInfo.Name)
 			err := os.Mkdir(jobDirPath, os.ModePerm)
-			if err != nil {
+			if err != nil && !os.IsExist(err) {
 				// TODO 向master报告失败 ReportFailure
-				fmt.Println("创建工作空间失败")
+				fmt.Println(jobDirPath)
+				fmt.Println("创建工作空间失败", err)
 				continue
 			}
 
@@ -85,29 +84,30 @@ func main() {
 				fmt.Println("保存任务文件失败")
 				continue
 			}
-			fmt.Fprint(jobFile, resp.Data)
+			fmt.Fprint(jobFile, string(resp.Data))
 			jobFile.Close()
 
 			// pull Input File (.txt)
-			resp, _ = client.PullFile(context.Background(), &api.PullFileReq{JobName: jobInfo.Name, FileName: "input.txt"})
+			var inputType string
+			if jobInfo.Type == "Map" {
+				inputType = "input.txt"
+			} else {
+				inputType = "temp.txt"
+			}
+			resp, _ = client.PullFile(context.Background(), &api.PullFileReq{JobName: jobInfo.Name, FileName: inputType})
 			if !resp.Success {
 				// TODO 向master报告失败 ReportFailure
 				fmt.Println(resp.Message)
 				continue
 			}
-			var inputType string
-			if jobInfo.Type == "Map" {
-				inputType = "input"
-			} else {
-				inputType = "temp"
-			}
-			inputFile, err := os.Create(fmt.Sprintf("%s/%s.txt", jobDirPath, inputType))
+			inputFile, err := os.Create(fmt.Sprintf("%s/%s", jobDirPath, inputType))
 			if err != nil {
 				// TODO 向master报告失败 ReportFailure
 				fmt.Println("保存输入文件失败")
 				continue
 			}
-			fmt.Fprint(inputFile, resp.Data)
+			fmt.Fprint(inputFile, string(resp.Data))
+			inputFile.Close()
 
 			// load Job
 			p, err := plugin.Open(fmt.Sprintf("%s/job.so", jobDirPath))
@@ -125,9 +125,9 @@ func main() {
 			if jobInfo.Type == "Map" {
 				// stage Map
 				doMap := doJob.(func(string, string) []mr.KV)
-				input, _ := ioutil.ReadAll(inputFile)
+				input, _ := ioutil.ReadFile(fmt.Sprintf("%s/input.txt", jobDirPath))
 				kvs := doMap(inputType, string(input))
-				inputFile.Close()
+				fmt.Println(len(kvs))
 
 				// stage Shuffle
 				sort.Sort(ByKey(kvs))
@@ -140,13 +140,14 @@ func main() {
 				for _, kv := range kvs {
 					fmt.Fprintf(outputFile, "%s %s\n", kv.Key, kv.Value)
 				}
-				output, _ := ioutil.ReadAll(outputFile)
+				outputFile.Close()
+				output, _ := ioutil.ReadFile(fmt.Sprintf("%s/temp.txt", jobDirPath))
 				resp, _ := client.WriteFile(context.Background(), &api.WriteFileReq{
 					JobName:  jobInfo.Name,
 					FileName: "temp.txt",
 					Data:     output,
 				})
-				outputFile.Close()
+
 				if !resp.Success {
 					// TODO 向master报告失败 ReportFailure
 					fmt.Println(resp.Message)
@@ -154,7 +155,8 @@ func main() {
 				}
 			} else {
 				doReduce := doJob.(func(string, []string) string)
-				scanner := bufio.NewReader(inputFile)
+				tempFile, _ := os.Open(fmt.Sprintf("%s/temp.txt", jobDirPath))
+				scanner := bufio.NewReader(tempFile)
 				outputFile, err := os.Create(fmt.Sprintf("%s/output.txt", jobDirPath))
 				if err != nil {
 					inputFile.Close()
@@ -191,22 +193,20 @@ func main() {
 					}
 					values = append(values, tokens[1])
 				}
-				inputFile.Close()
-				output, _ := ioutil.ReadAll(outputFile)
+				outputFile.Close()
+				output, _ := ioutil.ReadFile(fmt.Sprintf("%s/output.txt", jobDirPath))
 				resp, _ := client.WriteFile(context.Background(), &api.WriteFileReq{
 					JobName:  jobInfo.Name,
 					FileName: "output.txt",
 					Data:     output,
 				})
-				outputFile.Close()
 				if !resp.Success {
 					// TODO 向master报告失败 ReportFailure
 					fmt.Println(resp.Message)
 					continue
 				}
 			}
-		} else {
-			fmt.Println(resp.Message)
+			client.DoneJob(context.Background(), &api.DoneJobReq{JobId: jobInfo.Id})
 		}
 	}
 }
