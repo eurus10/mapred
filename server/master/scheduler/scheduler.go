@@ -54,6 +54,14 @@ func GetJob(worker string) (bool, mr.Job) {
 	return found, target
 }
 
+func GiveUpJob(jobID int) {
+	job, unfinished := jobs[jobID]
+	if unfinished {
+		job.Worker = ""
+		jobs[jobID] = job
+	}
+}
+
 func Done(jobID int) {
 	job, unfinished := jobs[jobID]
 	if unfinished {

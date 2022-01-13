@@ -62,9 +62,12 @@ func main() {
 			jobDirPath := fmt.Sprintf("%s/%s", config.APPS, jobInfo.Name)
 			err := os.Mkdir(jobDirPath, os.ModePerm)
 			if err != nil && !os.IsExist(err) {
-				// TODO 向master报告失败 ReportFailure
-				fmt.Println(jobDirPath)
-				fmt.Println("创建工作空间失败", err)
+				fmt.Println("创建工作空间失败")
+				client.ReportFailure(context.Background(), &api.ReportFailureReq{
+					WorkerId: workerID,
+					JobId:    jobInfo.Id,
+					Message:  "创建工作空间失败",
+				})
 				continue
 			}
 
@@ -74,14 +77,22 @@ func main() {
 				FileName: "job.so",
 			})
 			if !resp.Success {
-				// TODO 向master报告失败 ReportFailure
 				fmt.Println(resp.Message)
+				client.ReportFailure(context.Background(), &api.ReportFailureReq{
+					WorkerId: workerID,
+					JobId:    jobInfo.Id,
+					Message:  resp.Message,
+				})
 				continue
 			}
 			jobFile, err := os.Create(fmt.Sprintf("%s/job.so", jobDirPath))
 			if err != nil {
-				// TODO 向master报告失败 ReportFailure
 				fmt.Println("保存任务文件失败")
+				client.ReportFailure(context.Background(), &api.ReportFailureReq{
+					WorkerId: workerID,
+					JobId:    jobInfo.Id,
+					Message:  "保存任务文件失败",
+				})
 				continue
 			}
 			fmt.Fprint(jobFile, string(resp.Data))
@@ -96,14 +107,22 @@ func main() {
 			}
 			resp, _ = client.PullFile(context.Background(), &api.PullFileReq{JobName: jobInfo.Name, FileName: inputType})
 			if !resp.Success {
-				// TODO 向master报告失败 ReportFailure
 				fmt.Println(resp.Message)
+				client.ReportFailure(context.Background(), &api.ReportFailureReq{
+					WorkerId: workerID,
+					JobId:    jobInfo.Id,
+					Message:  resp.Message,
+				})
 				continue
 			}
 			inputFile, err := os.Create(fmt.Sprintf("%s/%s", jobDirPath, inputType))
 			if err != nil {
-				// TODO 向master报告失败 ReportFailure
 				fmt.Println("保存输入文件失败")
+				client.ReportFailure(context.Background(), &api.ReportFailureReq{
+					WorkerId: workerID,
+					JobId:    jobInfo.Id,
+					Message:  "保存输入文件失败",
+				})
 				continue
 			}
 			fmt.Fprint(inputFile, string(resp.Data))
@@ -112,14 +131,22 @@ func main() {
 			// load Job
 			p, err := plugin.Open(fmt.Sprintf("%s/job.so", jobDirPath))
 			if err != nil {
-				// TODO 向master报告失败 ReportFailure
 				fmt.Println("读取任务文件失败")
+				client.ReportFailure(context.Background(), &api.ReportFailureReq{
+					WorkerId: workerID,
+					JobId:    jobInfo.Id,
+					Message:  "读取任务文件失败",
+				})
 				continue
 			}
 			doJob, err := p.Lookup(jobInfo.Type)
 			if err != nil {
-				// TODO 向master报告失败 ReportFailure
 				fmt.Println("任务文件不包含指定类型任务")
+				client.ReportFailure(context.Background(), &api.ReportFailureReq{
+					WorkerId: workerID,
+					JobId:    jobInfo.Id,
+					Message:  "任务文件不包含指定类型任务",
+				})
 				continue
 			}
 			if jobInfo.Type == "Map" {
@@ -133,8 +160,12 @@ func main() {
 				sort.Sort(ByKey(kvs))
 				outputFile, err := os.Create(fmt.Sprintf("%s/temp.txt", jobDirPath))
 				if err != nil {
-					// TODO 向master报告失败 ReportFailure
 					fmt.Println("存储计算结果失败")
+					client.ReportFailure(context.Background(), &api.ReportFailureReq{
+						WorkerId: workerID,
+						JobId:    jobInfo.Id,
+						Message:  "存储计算结果失败",
+					})
 					continue
 				}
 				for _, kv := range kvs {
@@ -147,10 +178,13 @@ func main() {
 					FileName: "temp.txt",
 					Data:     output,
 				})
-
 				if !resp.Success {
-					// TODO 向master报告失败 ReportFailure
 					fmt.Println(resp.Message)
+					client.ReportFailure(context.Background(), &api.ReportFailureReq{
+						WorkerId: workerID,
+						JobId:    jobInfo.Id,
+						Message:  resp.Message,
+					})
 					continue
 				}
 			} else {
@@ -159,9 +193,12 @@ func main() {
 				scanner := bufio.NewReader(tempFile)
 				outputFile, err := os.Create(fmt.Sprintf("%s/output.txt", jobDirPath))
 				if err != nil {
-					inputFile.Close()
-					// TODO 向master报告失败 ReportFailure
 					fmt.Println("存储计算结果失败")
+					client.ReportFailure(context.Background(), &api.ReportFailureReq{
+						WorkerId: workerID,
+						JobId:    jobInfo.Id,
+						Message:  "存储计算结果失败",
+					})
 					continue
 				}
 				var key string
@@ -176,10 +213,13 @@ func main() {
 					}
 					tokens := strings.Split(string(line), " ")
 					if len(tokens) != 2 {
-						inputFile.Close()
 						outputFile.Close()
-						// TODO 向master报告失败 ReportFailure
 						fmt.Println("输入文件数据格式错误")
+						client.ReportFailure(context.Background(), &api.ReportFailureReq{
+							WorkerId: workerID,
+							JobId:    jobInfo.Id,
+							Message:  "输入文件数据格式错误",
+						})
 						continue
 					}
 					if tokens[0] != key {
@@ -201,8 +241,12 @@ func main() {
 					Data:     output,
 				})
 				if !resp.Success {
-					// TODO 向master报告失败 ReportFailure
 					fmt.Println(resp.Message)
+					client.ReportFailure(context.Background(), &api.ReportFailureReq{
+						WorkerId: workerID,
+						JobId:    jobInfo.Id,
+						Message:  resp.Message,
+					})
 					continue
 				}
 			}

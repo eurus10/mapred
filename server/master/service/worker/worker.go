@@ -81,6 +81,12 @@ func (w *WorkerService) DoneJob(ctx context.Context, req *api.DoneJobReq) (*api.
 	return &api.GenericResp{Success: true, Message: "任务结果提交成功"}, nil
 }
 
+func (w *WorkerService) ReportFailure(ctx context.Context, req *api.ReportFailureReq) (*api.GenericResp, error) {
+	scheduler.GiveUpJob(int(req.JobId))
+	fmt.Printf("Worker@%s放弃任务[ID=%d], 原因: %s\n", req.WorkerId, req.JobId, req.Message)
+	return &api.GenericResp{Success: true, Message: "报告成功"}, nil
+}
+
 func (w *WorkerService) PullFile(ctx context.Context, req *api.PullFileReq) (*api.PullFileResp, error) {
 	filePath := fmt.Sprintf("%s/%s/%s", config.APPS, req.JobName, req.FileName)
 	data, err := ioutil.ReadFile(filePath)
