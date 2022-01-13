@@ -1,0 +1,13 @@
+bye 2
+good 1
+hello 3
+is 3
+lily 2
+my 1
+name 1
+say 1
+star 1
+teio 1
+the 2
+this 2
+world 6
